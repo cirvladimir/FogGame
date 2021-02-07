@@ -9,20 +9,20 @@ public class RotateScript : MonoBehaviour
 
     //public float speed;
 
-    InputDevice controller;
+    //InputDevice controller;
 
     // Start is called before the first frame update
     void Start()
     {
-        var inputDevices = new List<InputDevice>();
-        UnityEngine.XR.InputDevices.GetDevicesWithRole(UnityEngine.XR.InputDeviceRole.RightHanded, inputDevices);
+        //var inputDevices = new List<InputDevice>();
+        //UnityEngine.XR.InputDevices.GetDevicesWithRole(UnityEngine.XR.InputDeviceRole.RightHanded, inputDevices);
 
-        if (inputDevices.Count == 0)
-        {
-            Debug.LogError("Right hand controller not found.");
-        }
+        //if (inputDevices.Count == 0)
+        //{
+        //    Debug.LogError("Right hand controller not found.");
+        //}
 
-        controller = inputDevices[0];
+        //controller = inputDevices[0];
     }
 
     // Update is called once per frame
