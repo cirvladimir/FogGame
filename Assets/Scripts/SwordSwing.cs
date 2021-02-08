@@ -8,16 +8,22 @@ public class SwordSwing : MonoBehaviour
     {
         PREPING,
         SWINGING,
-        BLOCKED
+        UPSWING
     }
 
-    SwingState swingState = SwingState.SWINGING;
+    SwingState swingState;
+    float prepStart;
+    float startRotation = 0f;
     Rigidbody rb;
+    HingeJoint hinge;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        prepStart = Time.time;
+        swingState = SwingState.PREPING;
+        rb = GetComponent<Rigidbody>();
+        hinge = GetComponent<HingeJoint>();
     }
 
     // Update is called once per frame
@@ -25,14 +31,29 @@ public class SwordSwing : MonoBehaviour
     {
         switch (swingState)
         {
-            case SwingState.SWINGING:
-                transform.Rotate(new Vector3(-90f * Time.deltaTime, 0f, 0f));
-                break;
-            case SwingState.BLOCKED:
-                transform.Rotate(new Vector3(50f * Time.deltaTime, 0f, 0f));
-                if (transform.localEulerAngles.x > 70f)
+            case SwingState.PREPING:
+                if (Time.time - prepStart > 3f)
                 {
                     swingState = SwingState.SWINGING;
+                    hinge.useSpring = true;
+                    hinge.useMotor = false;
+                    rb.isKinematic = false;
+                }
+                break;
+            case SwingState.SWINGING:
+                if (hinge.angle < -140)
+                {
+                    Debug.Log("Upswing.");
+                    swingState = SwingState.UPSWING;
+                    hinge.useSpring = false;
+                    hinge.useMotor = true;
+                }
+                break;
+            case SwingState.UPSWING:
+                if (hinge.angle > -2f)
+                {
+                    swingState = SwingState.PREPING;
+                    rb.isKinematic = true;
                 }
                 break;
         }
@@ -47,6 +68,6 @@ public class SwordSwing : MonoBehaviour
     public void OnSwordBlocked()
     {
         Debug.Log("Collision!");
-        swingState = SwingState.BLOCKED;
+        //swingState = SwingState.BLOCKED;
     }
 }
