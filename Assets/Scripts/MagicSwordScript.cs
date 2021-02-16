@@ -8,11 +8,12 @@ public class MagicSwordScript : MonoBehaviour
     public AudioClip ShingSound;
     float rotationLeft = 140f;
     float timeStart;
-    float pauseTime = 3f;
-    float accel = 180f;
+    public float PauseTime = 3f;
+    public float Accel = 180f;
     float curSpeed = 0f;
     float maxSpeed = 270f;
-    bool isDone = false;
+    public bool IsDone = false;
+    public float DoneTime;
 
     // Start is called before the first frame update
     void Start()
@@ -24,28 +25,37 @@ public class MagicSwordScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isDone)
+        if (IsDone)
         {
+            if (Time.time > DoneTime + 2f)
+            {
+                Destroy(gameObject);
+            }
             return;
         }
-        if (Time.time > timeStart + pauseTime)
+        if (Time.time > timeStart + PauseTime)
         {
-            curSpeed += Time.deltaTime * accel;
+            curSpeed += Time.deltaTime * Accel;
             curSpeed = Mathf.Min(curSpeed, maxSpeed);
             float rotation = curSpeed * Time.deltaTime;
             transform.Rotate(0f, rotation, 0f, Space.Self);
             rotationLeft -= rotation;
             if (rotationLeft < 0f)
             {
-                isDone = true;
+                IsDone = true;
+                DoneTime = Time.time;
             }
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        isDone = true;
-        AudioSource.PlayClipAtPoint(ShingSound, transform.position);
-        //Debug.Log("Trigger enterd.");
+        if (!IsDone)
+        { 
+            IsDone = true;
+            DoneTime = Time.time;
+            AudioSource.PlayClipAtPoint(ShingSound, transform.position);
+            //Debug.Log("Trigger enterd.");
+        }
     }
 }
